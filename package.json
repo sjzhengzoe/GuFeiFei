@@ -1,0 +1,20 @@
+{
+  "name": "gufeifei",
+  "version": "1.0.0",
+  "description": "study",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sjzhengzoe/GuFeiFei.git"
+  },
+  "author": "gufeifei",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sjzhengzoe/GuFeiFei/issues"
+  },
+  "homepage": "https://github.com/sjzhengzoe/GuFeiFei#readme",
+  "keywords": []
+}
