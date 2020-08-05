@@ -16,5 +16,9 @@
     "url": "https://github.com/sjzhengzoe/GuFeiFei/issues"
   },
   "homepage": "https://github.com/sjzhengzoe/GuFeiFei#readme",
-  "keywords": []
+  "keywords": [],
+  "devDependencies": {
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
 }
