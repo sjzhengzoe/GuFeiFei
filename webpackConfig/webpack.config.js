@@ -8,12 +8,22 @@ module.exports = {
     filename: "./[name].js",
     path: path.resolve(__dirname, "../dist"),
   },
-  module:{
-    rules:[
+  module: {
+    rules: [
       {
-        test:/\.css$/,
-        use:['style-loader','css-loader']
-      }
-    ]
-  }
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(jpe?g|png|gif)$/,
+        use: {
+          loader: "file-loader",
+          options: {
+            name: "[name].[hash:4].[ext]",
+            outputPath: "./global/img",
+          },
+        },
+      },
+    ],
+  },
 }
