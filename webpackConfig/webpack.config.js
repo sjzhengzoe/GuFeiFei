@@ -15,6 +15,10 @@ module.exports = {
         use: ["style-loader", "css-loader"],
       },
       {
+        test: /\.scss$/,
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
+      {
         test: /\.(jpe?g|png|gif)$/,
         use: {
           loader: "url-loader",
@@ -32,6 +36,7 @@ module.exports = {
           options: {
             name: "[name].[ext]",
             outputPath: "./global/font",
+            limit: 1024,
           },
         },
       },

@@ -4,7 +4,7 @@
   src: url("webfont.woff2") format("woff2");
 }
 
-.body {
+body {
   color: red;
   font-family: "myfont";
 }
