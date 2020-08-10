@@ -17,17 +17,18 @@ module.exports = {
       {
         test: /\.(jpe?g|png|gif)$/,
         use: {
-          loader: "file-loader",
+          loader: "url-loader",
           options: {
             name: "[name].[ext]",
             outputPath: "./global/img",
+            limit: 1024,
           },
         },
       },
       {
         test: /\.(woff|woff2|svg|eot|ttf)$/,
         use: {
-          loader: "file-loader",
+          loader: "url-loader",
           options: {
             name: "[name].[ext]",
             outputPath: "./global/font",
