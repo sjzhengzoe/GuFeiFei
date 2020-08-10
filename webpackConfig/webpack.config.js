@@ -19,8 +19,18 @@ module.exports = {
         use: {
           loader: "file-loader",
           options: {
-            name: "[name].[hash:4].[ext]",
+            name: "[name].[ext]",
             outputPath: "./global/img",
+          },
+        },
+      },
+      {
+        test: /\.(woff|woff2|svg|eot|ttf)$/,
+        use: {
+          loader: "file-loader",
+          options: {
+            name: "[name].[ext]",
+            outputPath: "./global/font",
           },
         },
       },

@@ -1,3 +1,10 @@
-body {
+@font-face {
+  font-family: "myfont";
+  font-display: swap;
+  src: url("webfont.woff2") format("woff2");
+}
+
+.body {
   color: red;
+  font-family: "myfont";
 }
