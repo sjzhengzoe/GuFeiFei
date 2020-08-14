@@ -2,6 +2,8 @@ const path = require("path")
 // Plugins
 const {CleanWebpackPlugin} = require("clean-webpack-plugin")
 const htmlWebpackPlugin = require("html-webpack-plugin")
+const miniCssExtractPlugun = require("mini-css-extract-plugin")
+
 module.exports = {
   mode: "development",
   entry: {
@@ -15,7 +17,7 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [miniCssExtractPlugun.loader, "css-loader"],
       },
       {
         test: /\.scss$/,
@@ -52,6 +54,9 @@ module.exports = {
       template: "./src/index.html", // 打包文件
       inject: "body", // js在何处插入
       favicon: "./src/favicon.ico",
+    }),
+    new miniCssExtractPlugun({
+      filename: "./css/index.css",
     }),
   ],
 }
