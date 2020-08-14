@@ -1,13 +1,14 @@
 const path = require("path")
 // Plugins
 const {CleanWebpackPlugin} = require("clean-webpack-plugin")
+const htmlWebpackPlugin = require("html-webpack-plugin")
 module.exports = {
   mode: "development",
   entry: {
     main: "./src/index.js",
   },
   output: {
-    filename: "./[name].js",
+    filename: "./js/[name].js",
     path: path.resolve(__dirname, "../dist"),
   },
   module: {
@@ -44,5 +45,13 @@ module.exports = {
       },
     ],
   },
-  plugins: [new CleanWebpackPlugin()],
+  plugins: [
+    new CleanWebpackPlugin(),
+    new htmlWebpackPlugin({
+      filename: "./html/index.html", // 入口文件
+      template: "./src/index.html", // 打包文件
+      inject: "body", // js在何处插入
+      favicon: "./src/favicon.ico",
+    }),
+  ],
 }
