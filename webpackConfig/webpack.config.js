@@ -16,12 +16,23 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: [miniCssExtractPlugun.loader, "css-loader"],
-      },
-      {
         test: /\.scss$/,
-        use: ["style-loader", "css-loader", "sass-loader"],
+        use: [
+          miniCssExtractPlugun.loader,
+          "css-loader",
+
+          "sass-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              plugins: [
+                require("autoprefixer")({
+                  overrideBrowserslist: ["last 2 versions", ">1%"],
+                }),
+              ],
+            },
+          },
+        ],
       },
       {
         test: /\.(jpe?g|png|gif)$/,
