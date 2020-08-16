@@ -15,6 +15,10 @@ module.exports = {
     path: path.resolve(__dirname, "../dist"),
   },
   devtool: ISPRODUCTION ? "none" : "checp-module-eval-source-map",
+  devServer: {
+    port: "8081",
+    contentBase: ISPRODUCTION ? "./dist" : "./src",
+  },
   module: {
     rules: [
       {
@@ -22,7 +26,6 @@ module.exports = {
         use: [
           miniCssExtractPlugun.loader,
           "css-loader",
-
           "sass-loader",
           {
             loader: "postcss-loader",
@@ -43,6 +46,7 @@ module.exports = {
           options: {
             name: "[name].[ext]",
             outputPath: "./global/img",
+            publicPath: "../global/img",
             limit: 1024,
           },
         },
@@ -54,6 +58,7 @@ module.exports = {
           options: {
             name: "[name].[ext]",
             outputPath: "./global/font",
+            publicPath: "../global/font",
             limit: 1024,
           },
         },
