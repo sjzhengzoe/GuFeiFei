@@ -1,4 +1,5 @@
 const path = require("path")
+const webpack = require("webpack")
 // Plugins
 const {CleanWebpackPlugin} = require("clean-webpack-plugin")
 const htmlWebpackPlugin = require("html-webpack-plugin")
@@ -17,6 +18,7 @@ module.exports = {
   devtool: ISPRODUCTION ? "none" : "checp-module-eval-source-map",
   devServer: {
     port: "8081",
+    hotOnly: true, // 修改代码后不自动刷新页面
     contentBase: ISPRODUCTION ? "./dist" : "./src",
     proxy: {
       "/api": {
@@ -81,5 +83,6 @@ module.exports = {
     new miniCssExtractPlugun({
       filename: "./css/index.css",
     }),
+    new webpack.HotModuleReplacementPlugin(),
   ],
 }
