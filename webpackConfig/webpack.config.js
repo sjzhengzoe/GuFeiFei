@@ -18,6 +18,11 @@ module.exports = {
   devServer: {
     port: "8081",
     contentBase: ISPRODUCTION ? "./dist" : "./src",
+    proxy: {
+      "/api": {
+        target: "http://localhost:8082",
+      },
+    },
   },
   module: {
     rules: [

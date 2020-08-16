@@ -1,4 +1,6 @@
 import "./index.scss"
-import picture from "./test.jpg"
-console.log(picture) // 这里输出的实际是处理过的路径
-document.getElementById("test").src = picture
+import axios from "axios"
+
+axios.get("/api/info").then(res => {
+  console.log(res)
+})
