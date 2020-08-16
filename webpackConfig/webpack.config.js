@@ -3,6 +3,7 @@ const path = require("path")
 const {CleanWebpackPlugin} = require("clean-webpack-plugin")
 const htmlWebpackPlugin = require("html-webpack-plugin")
 const miniCssExtractPlugun = require("mini-css-extract-plugin")
+const ISPRODUCTION = false
 
 module.exports = {
   mode: "development",
@@ -13,6 +14,7 @@ module.exports = {
     filename: "./js/[name].js",
     path: path.resolve(__dirname, "../dist"),
   },
+  devtool: ISPRODUCTION ? "none" : "checp-module-eval-source-map",
   module: {
     rules: [
       {
