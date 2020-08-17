@@ -1,6 +1,11 @@
-import "./index.scss"
-import axios from "axios"
+import "./index.scss";
 
-axios.get("/api/info").then(res => {
-  console.log(res)
-})
+let a = {
+  a:1
+}
+let b = {
+  ...a,
+  b:"sujie"
+}
+
+const c = new Promise(()=>{})
