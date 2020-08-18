@@ -4,18 +4,23 @@ const webpack = require("webpack")
 const {CleanWebpackPlugin} = require("clean-webpack-plugin")
 const htmlWebpackPlugin = require("html-webpack-plugin")
 const miniCssExtractPlugun = require("mini-css-extract-plugin")
+// 是否是生产环境
 const ISPRODUCTION = false
 
 module.exports = {
   mode: "development",
+
   entry: {
-    main: "./src/index.jsx",
+    main: "./src/reactTest/index.jsx",
   },
+
   output: {
-    filename: "./js/[name].js",
+    filename: "./reactTest/[name].js",
     path: path.resolve(__dirname, "../dist"),
   },
+
   devtool: ISPRODUCTION ? "none" : "checp-module-eval-source-map",
+
   devServer: {
     port: "8081",
     hotOnly: true, // 修改代码后不自动刷新页面
@@ -26,6 +31,7 @@ module.exports = {
       },
     },
   },
+
   module: {
     rules: [
       {
@@ -82,14 +88,19 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new htmlWebpackPlugin({
-      filename: "./html/index.html", // 入口文件
-      template: "./src/index.html", // 打包文件
+      filename: "./reactTest/index.html", // 打包文件
+      template: "./src/reactTest/index.html", // 入口文件
       inject: "body", // js在何处插入
-      favicon: "./src/favicon.ico",
+      favicon: "./src/global/img/favicon.ico",
     }),
     new miniCssExtractPlugun({
-      filename: "./css/index.css",
+      filename: "./reactTest/index.css",
     }),
     new webpack.HotModuleReplacementPlugin(),
   ],
+  resolve: {
+    alias: {
+      global: path.resolve(__dirname, "../src/global"),
+    },
+  },
 }
