@@ -9,7 +9,7 @@ const ISPRODUCTION = false
 module.exports = {
   mode: "development",
   entry: {
-    main: "./src/index.js",
+    main: "./src/index.jsx",
   },
   output: {
     filename: "./js/[name].js",
@@ -71,7 +71,7 @@ module.exports = {
         },
       },
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
