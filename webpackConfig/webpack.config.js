@@ -2,20 +2,20 @@ const path = require("path")
 const webpack = require("webpack")
 // Plugins
 const {CleanWebpackPlugin} = require("clean-webpack-plugin")
-const htmlWebpackPlugin = require("html-webpack-plugin")
+
 const miniCssExtractPlugun = require("mini-css-extract-plugin")
 // 是否是生产环境
 const ISPRODUCTION = false
 
+const {handleEntry, handleHtml} = require("./util")
+
 module.exports = {
   mode: "development",
 
-  entry: {
-    main: "./src/reactTest/index.jsx",
-  },
+  entry: handleEntry(),
 
   output: {
-    filename: "./reactTest/[name].js",
+    filename: "pages/[name]_[hash:4].js",
     path: path.resolve(__dirname, "../dist"),
   },
 
@@ -59,7 +59,7 @@ module.exports = {
           options: {
             name: "[name].[ext]",
             outputPath: "./global/img",
-            publicPath: "../global/img",
+            publicPath: "../../global/img",
             limit: 1024,
           },
         },
@@ -71,7 +71,7 @@ module.exports = {
           options: {
             name: "[name].[ext]",
             outputPath: "./global/font",
-            publicPath: "../global/font",
+            publicPath: "../../global/font",
             limit: 1024,
           },
         },
@@ -85,19 +85,18 @@ module.exports = {
       },
     ],
   },
+
   plugins: [
     new CleanWebpackPlugin(),
-    new htmlWebpackPlugin({
-      filename: "./reactTest/index.html", // 打包文件
-      template: "./src/reactTest/index.html", // 入口文件
-      inject: "body", // js在何处插入
-      favicon: "./src/global/img/favicon.ico",
-    }),
+
+    ...handleHtml(),
+
     new miniCssExtractPlugun({
-      filename: "./reactTest/index.css",
+      filename: "./pages/[name].css",
     }),
     new webpack.HotModuleReplacementPlugin(),
   ],
+
   resolve: {
     alias: {
       global: path.resolve(__dirname, "../src/global"),
