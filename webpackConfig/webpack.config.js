@@ -1,13 +1,13 @@
-const path = require("path")
-const webpack = require("webpack")
+const path = require("path");
+const webpack = require("webpack");
 // Plugins
-const {CleanWebpackPlugin} = require("clean-webpack-plugin")
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-const miniCssExtractPlugun = require("mini-css-extract-plugin")
+const miniCssExtractPlugun = require("mini-css-extract-plugin");
 // 是否是生产环境
-const ISPRODUCTION = false
+const ISPRODUCTION = false;
 
-const {handleEntry, handleHtml} = require("./util")
+const { handleEntry, handleHtml } = require("./util");
 
 module.exports = {
   mode: "development",
@@ -23,7 +23,7 @@ module.exports = {
 
   devServer: {
     port: "8081",
-    hotOnly: true, // 修改代码后不自动刷新页面
+    hotOnly: false, // 修改代码后不自动刷新页面
     contentBase: ISPRODUCTION ? "./dist" : "./src",
     proxy: {
       "/api": {
@@ -100,6 +100,7 @@ module.exports = {
   resolve: {
     alias: {
       global: path.resolve(__dirname, "../src/global"),
+      MiniReact: path.resolve(__dirname, "../src/global/js/MiniReact.js"),
     },
   },
-}
+};

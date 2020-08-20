@@ -10,6 +10,7 @@
     "@babel/preset-react"
   ],
   "plugins": [
+    ["@babel/plugin-transform-react-jsx", { "pragma": "MiniReact.createElement" }],
     [
       "@babel/plugin-transform-runtime",
       {
