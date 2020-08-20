@@ -10,7 +10,7 @@ const ISPRODUCTION = false;
 const { handleEntry, handleHtml } = require("./util");
 
 module.exports = {
-  mode: "development",
+  mode: ISPRODUCTION ? "production" : "development",
 
   entry: handleEntry(),
 
@@ -94,7 +94,7 @@ module.exports = {
     new miniCssExtractPlugun({
       filename: "./pages/[name].css",
     }),
-    new webpack.HotModuleReplacementPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
   ],
 
   resolve: {
