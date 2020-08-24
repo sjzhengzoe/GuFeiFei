@@ -1,4 +1,6 @@
 const path = require("path");
+const createTextPlugin = require("./plugins/create-text-plugin.js");
+
 module.exports = {
   mode: "development",
   entry: {
@@ -29,4 +31,9 @@ module.exports = {
     filename: "./[name].js",
     path: path.resolve(__dirname, "./dist"),
   },
+  plugins: [
+    new createTextPlugin({
+      name: "my plugins",
+    }),
+  ],
 };
