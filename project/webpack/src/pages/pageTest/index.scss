@@ -1,0 +1,20 @@
+@font-face {
+  font-family: "myfont";
+  font-display: swap;
+  src: url("global/font/webfont.woff2") format("woff2");
+}
+
+body {
+  font-size: 24px;
+  color: red;
+  font-family: "myfont";
+}
+.container {
+  display: flex;
+  align-items: center;
+}
+
+img {
+  width: 100px;
+  display: inline-block;
+}
