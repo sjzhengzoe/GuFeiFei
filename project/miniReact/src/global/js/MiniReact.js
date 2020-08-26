@@ -113,9 +113,17 @@ function handleVdom(vdom) {
   // 处理子元素 用递归的方式调用handleVdom获取
   if (vdom.children.length > 0) {
     vdom.children.map((item) => {
-      let childrenEle = handleVdom(item);
+      // 有一种情况是 类组件的props里的children组件 当作为属性传到类组件中 children是一个数组 这里处理数组的情况
+      if (Array.isArray(item)) {
+        item.map((arrChild) => {
+          let childrenEle = handleVdom(arrChild);
+          appenTo(childrenEle, parentEle);
+        });
+      } else {
+        let childrenEle = handleVdom(item);
+        appenTo(childrenEle, parentEle);
+      }
       // 将子元素append到父元素
-      appenTo(childrenEle, parentEle);
     });
   }
 
