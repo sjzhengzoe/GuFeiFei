@@ -1,3 +1,8 @@
+let componentDidMountList = [];
+let componentDidUpdateList = [];
+let classDomList = [];
+let ComponentRenderIsFirst = true;
+
 function createElement(type, props, ...children) {
   let realType = type;
   let realProps = props;
@@ -5,7 +10,7 @@ function createElement(type, props, ...children) {
 
   // 处理子元素 将text类型转成统一对象格式
   realChildren = children.map((item) => {
-    if (typeof item == "string") {
+    if (typeof item !== "object") {
       return {
         type: "text",
         textValue: item,
@@ -55,11 +60,35 @@ function creatEle(vdom) {
 // 类组件转成真实Dom
 function handleClassToDom(vdom) {
   // 此处children不使用 目前children应该是一直为空 因为存在于props.children
-  const { type, props, children } = vdom;
+  const { type, props } = vdom;
   let classObj = new type(props);
-  let classVdom = classObj.render();
 
-  return handleVdom(classVdom);
+  if (type.getDerivedStateFromProps) {
+    type.getDerivedStateFromProps(classObj.props, classObj.state);
+  }
+
+  if (!ComponentRenderIsFirst && classObj.shouldComponentUpdate) {
+    classObj.shouldComponentUpdate();
+  }
+
+  // 获取真实dom
+  let classVdom = classObj.render.bind(classObj)();
+  let dom = handleVdom(classVdom);
+
+  if (!ComponentRenderIsFirst && classObj.getSnapshotBeforeUpdate) classObj.getSnapshotBeforeUpdate();
+
+  // 存储该真实dom到数组 并记录位置
+  classDomList.push(dom);
+  classObj.domIndex = classDomList.length - 1;
+
+  // 判断是第一次mount还是update
+  if (ComponentRenderIsFirst) {
+    classObj.componentDidMount && componentDidMountList.push(classObj.componentDidMount);
+  } else {
+    classObj.componentDidUpdate && componentDidUpdateList.push(classObj.componentDidUpdate);
+  }
+
+  return dom;
 }
 
 // 属性名处理
@@ -67,8 +96,10 @@ function propsTranslation(props) {
   switch (props) {
     case "className":
       return "class";
+    case "value":
+      return "value";
     default:
-      return props;
+      return null;
   }
 }
 
@@ -85,7 +116,8 @@ function eventTranslation(event) {
 function handleProps(vdom, ele) {
   if (!vdom.props) return null;
   for (let key in vdom.props) {
-    ele.setAttribute(propsTranslation(key), vdom.props[key]);
+    let propsName = propsTranslation(key);
+    propsName && ele.setAttribute(propsName, vdom.props[key]);
   }
 }
 
@@ -117,13 +149,14 @@ function handleVdom(vdom) {
       if (Array.isArray(item)) {
         item.map((arrChild) => {
           let childrenEle = handleVdom(arrChild);
+          // 将子元素append到父元素
           appenTo(childrenEle, parentEle);
         });
       } else {
         let childrenEle = handleVdom(item);
+        // 将子元素append到父元素
         appenTo(childrenEle, parentEle);
       }
-      // 将子元素append到父元素
     });
   }
 
@@ -137,11 +170,55 @@ function render(vdom, container) {
   const ele = handleVdom(vdom);
 
   container.appendChild(ele);
+
+  ComponentRenderIsFirst &&
+    componentDidMountList.map((item) => {
+      item();
+    });
 }
 // 类组件
 export class Component {
   constructor(props) {
+    this.state = {};
     this.props = props;
+  }
+  setState(state) {
+    ComponentRenderIsFirst = false;
+    const beforeState = this.state;
+    this.state = {
+      ...beforeState,
+      ...state,
+    };
+
+    if (this.constructor.getDerivedStateFromProps) {
+      this.constructor.getDerivedStateFromProps(this.props, this.state);
+    }
+
+    this.shouldComponentUpdate && this.shouldComponentUpdate();
+
+    // 获取新的dom
+    const vdom = this.render();
+    const dom = handleVdom(vdom);
+
+    if (this.componentDidUpdate) componentDidUpdateList.push(this.componentDidUpdate);
+
+    if (this.getSnapshotBeforeUpdate) this.getSnapshotBeforeUpdate();
+
+    // 获取旧的dom
+    const oldDom = classDomList[this.domIndex];
+    // 获取旧的dom的父节点
+    const parent = oldDom.parentNode;
+    // 插入新的dom
+    parent.insertBefore(dom, oldDom);
+    // 移除旧的dom
+    parent.removeChild(oldDom);
+    // 保存新的dom到列表
+    classDomList[this.domIndex] = dom;
+
+    componentDidUpdateList.map((item) => {
+      item();
+      componentDidUpdateList.shift();
+    });
   }
 }
 
