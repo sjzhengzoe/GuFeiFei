@@ -52,6 +52,7 @@ function render(vdom, container) {
 window.requestIdleCallback(createWorkRootAndMount);
 
 // 构建workRoot 并且渲染
+
 function createWorkRootAndMount(deadline) {
   // 有需要处理的fiber && 浏览器有空余 => workRoot并未构建完成
   while (nextShouldDealFiber && deadline.timeRemaining() > 1) {
@@ -80,37 +81,24 @@ function dealFiber(fiber) {
     // 记录上一个兄弟fiber
     let preFiber;
     children.map((item, index) => {
+      // 创建一个new fiber
+      let newFiber = {
+        type: item.type,
+        dom: createDom(item),
+        props: {
+          children: item.props.children,
+        },
+        parent: fiber,
+        child: null,
+        sibling: null,
+      };
+
       if (index == 0) {
-        // 创建一个新的fiber 作为fiber的child
-        let childFiber = {
-          type: item.type,
-          dom: createDom(item),
-          props: {
-            children: item.props.children,
-          },
-          // childFiber的parent为fiber
-          parent: fiber,
-          child: null,
-          sibling: null,
-        };
-        fiber.child = childFiber;
-        preFiber = childFiber;
+        fiber.child = newFiber;
+        preFiber = newFiber;
       } else {
-        // 创建一个新的fiber 作为preFiber的sibling
-        let siblingFiber = {
-          type: item.type,
-          dom: createDom(item),
-          props: {
-            children: item.props.children,
-          },
-          // siblingFiber的parent为fiber
-          parent: fiber,
-          child: null,
-          sibling: null,
-        };
-        // 上一个兄弟fiber的兄弟则为siblingFiber
-        preFiber.sibling = siblingFiber;
-        preFiber = siblingFiber;
+        preFiber.sibling = newFiber;
+        preFiber = newFiber;
       }
     });
     // 返回下一个要处理的fiber为fiber的child
