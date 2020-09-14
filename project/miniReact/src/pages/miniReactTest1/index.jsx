@@ -1,4 +1,4 @@
-import MiniReact, { Component } from "MiniReact";
+import MiniReact, { Component } from "../../global/js/MiniReactTest1";
 import "./index.scss";
 
 class Text extends Component {
