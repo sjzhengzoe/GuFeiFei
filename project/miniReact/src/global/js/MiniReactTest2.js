@@ -60,7 +60,7 @@ function createWorkRootAndMount(deadline) {
   }
   // 没有需要处理的fiber => workRoot已构建完成，则进行dom插入操作
   // 有需要处理的fiber => 浏览器有空余时间 继续进行workRoot构建
-  nextShouldDealFiber ? window.requestIdleCallback(createWorkRootAndMount) : mount();
+  nextShouldDealFiber ? window.requestIdleCallback(createWorkRootAndMount) : mount(workRoot.child);
 }
 
 function createDom(vdom) {
@@ -110,27 +110,16 @@ function dealFiber(fiber) {
   if (fiber.parent) return fiber.parent;
 }
 
-function mount() {
-  let isStop = false;
-  let root = workRoot;
+// 处理当前的fiber即把自己插入parent即可
+function mount(fiber) {
+  let parentDom = fiber.parent.dom;
+  let childDom = fiber.dom;
 
-  while (!isStop) {
-    if (root.child) {
-      let pre = root.child;
-      root.dom.appendChild(root.child.dom);
-      while (pre.sibling) {
-        root.dom.appendChild(pre.sibling.dom);
-        pre = pre.sibling;
-      }
-      root = root.child;
-    } else if (root.sibling) {
-      root = root.sibling;
-    } else if (root.parent.sibling) {
-      root = root.parent.sibling;
-    } else {
-      isStop = true;
-    }
-  }
+  parentDom.appendChild(childDom);
+
+  if (fiber.child) mount(fiber.child);
+  if (fiber.sibling) mount(fiber.sibling);
+  if (fiber.parent.sibling) mount(fiber.parent.sibling);
 }
 
 export default { createElement, render };
