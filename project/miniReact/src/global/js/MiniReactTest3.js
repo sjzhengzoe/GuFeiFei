@@ -120,33 +120,16 @@ function dealFiber(fiber) {
 
 // 构建渲染单链条
 function createMountLink(fiber) {
-  if (fiber.child) {
-    if (fiber.parent) {
-      if (fiber.parent.firstEffect) {
-        // 有孩子 非第一个孩子
-        fiber.parent.lastEffect.nextEffect = fiber.firstEffect;
-        fiber.lastEffect.nextEffect = fiber;
-        fiber.parent.lastEffect = fiber;
-      } else {
-        // 有孩子 第一个孩子
-        fiber.parent.firstEffect = fiber.firstEffect;
-        fiber.parent.lastEffect = fiber;
-        fiber.lastEffect.nextEffect = fiber;
-      }
-    } else {
-      // 根节点
-      fiber.lastEffect.nextEffect = fiber;
-    }
-  } else {
-    // 无孩子 非第一个孩子
-    if (fiber.parent.firstEffect) {
-      fiber.parent.lastEffect = fiber;
-      fiber.parent.lastEffect.next = fiber;
-    } else {
-      // 无孩子 第一个孩子
-      fiber.parent.lastEffect = fiber;
-      fiber.parent.firstEffect = fiber;
-    }
+  if (fiber.child && fiber.parent) {
+    // 有孩子 => 非第一个孩子 || 第一个孩子
+    fiber.parent.firstEffect ? (fiber.parent.lastEffect.nextEffect = fiber.firstEffect) : (fiber.parent.firstEffect = fiber.firstEffect);
+    fiber.lastEffect.nextEffect = fiber;
+    fiber.parent.lastEffect = fiber;
+  }
+  if (!fiber.child) {
+    fiber.parent.lastEffect = fiber;
+    // 无孩子 => 非第一个孩子 || 第一个孩子
+    fiber.parent.firstEffect ? (fiber.parent.lastEffect.next = fiber) : (fiber.parent.firstEffect = fiber);
   }
 }
 
@@ -155,9 +138,8 @@ function mount(fiber) {
   if (fiber.parent) {
     let parentDom = fiber.parent.dom;
     let childDom = fiber.dom;
-
     parentDom.appendChild(childDom);
-    mount(fiber.nextEffect);
+    fiber.nextEffect && mount(fiber.nextEffect);
   }
 }
 
