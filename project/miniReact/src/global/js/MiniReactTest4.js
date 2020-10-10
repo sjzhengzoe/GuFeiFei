@@ -2,6 +2,8 @@ let nextShouldDealFiber = null;
 let rootFiber;
 let workRoot;
 let currentRoot;
+let currentFunFiber;
+let currentHookIndex;
 
 function createElement(type, props, ...children) {
   let realChildren = [];
@@ -64,7 +66,8 @@ function createWorkRootAndMount(deadline) {
   }
   if (nextShouldDealFiber) {
     window.requestIdleCallback(createWorkRootAndMount);
-  } else {
+    // 这里判断workRoot 因为同一个dom添加多次事件会有多次事件绑定
+  } else if (workRoot) {
     mount(workRoot.child);
     currentRoot = workRoot;
     workRoot = null;
@@ -127,8 +130,11 @@ function dealClassFiberAndChildren(fiber) {
 
 // 处理function类型fiber
 function dealFunctionFiberAndChildren(fiber) {
-  fiber.stateNode = fiber.type();
-  let children = fiber.props.children;
+  currentFunFiber = fiber;
+  currentHookIndex = 0;
+  fiber.hooks = [];
+  let children = [fiber.type()];
+  reconcileChildren(fiber, children);
 }
 
 // 处理children和fiber的关系
@@ -141,12 +147,12 @@ function reconcileChildren(fiber, children) {
     let tag = "";
     if (item.type == "text") {
       tag = "TAG_TEXT";
-    } else if (typeof item.type == "string") {
-      tag = "TAG_HOST";
-    } else if (item.type.prototype.isReactComponent) {
+    } else if (item.type.prototype && item.type.prototype.isReactComponent) {
       tag = "TAG_CLASS_COMPONENT";
     } else if (typeof item.type == "function") {
       tag = "TAG_FUNCTION_COMPONENT";
+    } else if (typeof item.type == "string") {
+      tag = "TAG_HOST";
     }
 
     let isSameType = currentChildFiber ? currentChildFiber.type == item.type : false;
@@ -165,6 +171,8 @@ function reconcileChildren(fiber, children) {
       nextEffect: null,
       lastEffect: null,
     };
+
+    if (tag == "TAG_FUNCTION_COMPONENT") delete newFiber.updateQueue;
 
     if (index == 0) {
       fiber.child = newFiber;
@@ -201,7 +209,7 @@ class Components {
   setState(state) {
     let update = new Update(state);
 
-    this.internalFiber.updateQueue.enqueueUpdate(update);
+    this.internalFiber.updateQueue.enqueueUpdate(update.state);
     workRootAction();
   }
 }
@@ -229,7 +237,7 @@ class UpdateQueue {
   forceUpdate(state) {
     let nowUpdate = this.firstUpdate;
     while (nowUpdate) {
-      state = { ...state, ...nowUpdate.state };
+      state = { ...state, ...nowUpdate };
       nowUpdate = nowUpdate.nextUpdate;
     }
     return state;
@@ -238,7 +246,8 @@ class UpdateQueue {
 
 function mount(fiber) {
   if (fiber.effectTarge == "UPDATE") {
-    fiber.tag == "TAG_TEXT" ? (fiber.stateNode.textContent = fiber.props.textValue) : null;
+    fiber.tag == "TAG_TEXT" && (fiber.stateNode.textContent = fiber.props.textValue);
+    fiber.tag == "TAG_HOST" && updateDom(fiber);
   }
 
   if (fiber.effectTarge == "PLACEMENT") {
@@ -258,6 +267,34 @@ function mount(fiber) {
   if (fiber.sibling) mount(fiber.sibling);
   if (fiber.parent.sibling) mount(fiber.parent.sibling);
 }
+
+export function useState(initState) {
+  let state;
+  let currentHook;
+  if (currentFunFiber.alternate) {
+    let beforeState = currentFunFiber.alternate.hooks[currentHookIndex].state;
+    currentHook = {
+      state: currentFunFiber.alternate.hooks[currentHookIndex].updateQueue.forceUpdate(beforeState),
+      updateQueue: currentFunFiber.alternate.hooks[currentHookIndex].updateQueue,
+    };
+  } else {
+    currentHook = {
+      state: initState,
+      updateQueue: new UpdateQueue(),
+    };
+  }
+  state = currentHook.state;
+  currentFunFiber.hooks.push(currentHook);
+
+  function setState(state) {
+    currentHook.updateQueue.enqueueUpdate(state);
+    workRootAction();
+  }
+
+  currentHookIndex++;
+  return [state, setState];
+}
+
 // ===================================================================================
 
 function createDom(vdom) {
@@ -269,6 +306,12 @@ function createDom(vdom) {
   handleProps(vdom, dom);
   handleEvent(vdom, dom);
   return dom;
+}
+
+// 更新dom
+function updateDom(fiber) {
+  handleProps(fiber, fiber.stateNode);
+  handleEvent(fiber, fiber.stateNode);
 }
 
 // 绑定属性

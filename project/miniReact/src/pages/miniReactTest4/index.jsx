@@ -1,4 +1,4 @@
-import MiniReact from "../../global/js/MiniReactTest4";
+import MiniReact, { useState } from "../../global/js/MiniReactTest4";
 
 class Todo extends MiniReact.Components {
   constructor(props) {
@@ -15,7 +15,7 @@ class Todo extends MiniReact.Components {
     const { count } = this.state;
     return (
       <div>
-        <span onClick={() => this.addCount()}>add</span>
+        <span onClick={() => this.addCount()}>add class</span>
         <span>&nbsp;</span>
         <sapn>{count}</sapn>
       </div>
@@ -23,23 +23,35 @@ class Todo extends MiniReact.Components {
   }
 }
 
+function Fun() {
+  const [state, setstate] = useState({ count: 0 });
+  const [state2, setstate2] = useState({ count: 0 });
+  console.log(state, state2);
+  return (
+    <div>
+      <div>
+        <span onClick={() => setstate({ count: state.count + 1 })}>add function</span>
+        <span>&nbsp;</span>
+        <sapn>{state.count}</sapn>
+      </div>
+      <div>
+        <span onClick={() => setstate2({ count: state2.count + 1 })}>add function</span>
+        <span>&nbsp;</span>
+        <sapn>{state2.count}</sapn>
+      </div>
+    </div>
+  );
+}
+
 MiniReact.render(
   <div>
     <h1>title</h1>
-    <p>content</p>
-    <Todo />
+    <h2>content</h2>
     <ul>
-      <li>1</li>
-      <li>2</li>
-      <li>
-        <div>11</div>
-        <div>22</div>
-      </li>
-      <li>
-        <div>33</div>
-        <div>44</div>
-      </li>
       <Todo />
+      <Todo />
+      <Fun />
+      <Fun />
     </ul>
   </div>,
   document.getElementById("root")
