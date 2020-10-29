@@ -82,6 +82,7 @@ function quickSort(arr) {
 
 // 参考文章
 // https://zhuanlan.zhihu.com/p/42541704
+// 记忆点 选最小 块中间 冒最大
 
 // 测试用例
 let arr = [3, 2, 1, 11, 5, 4, 9];
