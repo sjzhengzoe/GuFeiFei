@@ -1,8 +1,7 @@
-/**
- * @param {number[]} nums1
- * @param {number[]} nums2
- * @return {number}
- */
+// 查找中位数
+
+// ==========================================================================
+
 var findMedianSortedArrays = function (nums1, nums2) {
   // 是否是奇数
   let isOdd = (nums1.length + nums2.length) % 2 !== 0;
@@ -63,4 +62,7 @@ var findMedianSortedArrays = function (nums1, nums2) {
   }
 };
 
+// ==========================================================================
+
+// 测试用例
 console.log(findMedianSortedArrays([2, 3, 4, 5, 6, 7], [1]));

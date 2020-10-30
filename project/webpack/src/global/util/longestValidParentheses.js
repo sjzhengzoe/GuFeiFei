@@ -1,27 +1,31 @@
 // 最长有效括号
 
+// ==========================================================================
+
 // 解法一 栈
 // 匹配到右括号的时候 匹配的到左括号就计算max 匹配不到左括号就设置为分隔符号
 
-// var longestValidParentheses = function (s) {
-//   let arr = s.split("");
-//   let max = 0;
-//   let use = [-1];
-//   arr.map((item, i) => {
-//     if (item == "(") {
-//       use.push(i);
-//     } else {
-//       use.pop();
-//       if (use.length == 0) {
-//         use.push(i);
-//       } else {
-//         max = Math.max(i - use[use.length - 1], max);
-//       }
-//     }
-//   });
+var longestValidParentheses = function (s) {
+  let arr = s.split("");
+  let max = 0;
+  let use = [-1];
+  arr.map((item, i) => {
+    if (item == "(") {
+      use.push(i);
+    } else {
+      use.pop();
+      if (use.length == 0) {
+        use.push(i);
+      } else {
+        max = Math.max(i - use[use.length - 1], max);
+      }
+    }
+  });
 
-//   return max;
-// };
+  return max;
+};
+
+// ==========================================================================
 
 // 解法二 动态规划
 // 遇到右括号计算有效字符串的值
@@ -43,4 +47,7 @@ var longestValidParentheses = function (s) {
   });
   return dp.length > 0 ? Math.max(...dp) : 0;
 };
+
+// ==========================================================================
+// 测试用例
 console.log(longestValidParentheses("()"));

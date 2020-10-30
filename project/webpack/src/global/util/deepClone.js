@@ -1,4 +1,6 @@
-// ===== 深拷贝 ======
+// 深拷贝
+
+// ==========================================================================
 
 // 使用weakMap是因为对象要作为key
 export default function deepClone(obj, hash = new WeakMap()) {
@@ -23,8 +25,9 @@ export default function deepClone(obj, hash = new WeakMap()) {
   return newObj;
 }
 
-// ===== 测试用例 =====
+// ==========================================================================
 
+// 测试用例
 let a = { a: 1 };
 let obj = {
   a,
