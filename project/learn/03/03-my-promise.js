@@ -152,32 +152,15 @@ class MyPromise {
       }
     );
   }
+  catch(fn) {
+    return this.then(undefined, fn);
+  }
 }
 
 // 测试代码
-function p1() {
-  return new MyPromise((resolve, reject) => {
-    setTimeout(() => {
-      resolve("success1");
-      // reject("failure p1");
-    }, 2000);
-  });
-}
-
-function p2() {
-  return new MyPromise((resolve, reject) => {
-    // resolve("success2");
-    reject("failure2");
-  });
-}
-p2()
-  .finally(() => {
-    console.log("finally");
-    // 1、返回一个 Promise 的情况
-    return p1();
-    // 2、什么都不返回的情况
-  })
-  .then(
-    (value) => console.log("sucess", value),
-    (reason) => console.log("failure", reason)
-  );
+new MyPromise((resolve, reject) => {
+  resolve("success2");
+  // reject("failure2");
+})
+  .then((value) => console.log(value))
+  .catch((reason) => console.log("reason:", reason));
