@@ -115,6 +115,13 @@ class MyPromise {
       });
     });
   }
+  static resolve(value) {
+    if (value instanceof MyPromise) {
+      return value;
+    } else {
+      return new MyPromise((resolveFn) => resolveFn(value));
+    }
+  }
 }
 
 function xPromise(x, promise, resolve, reject) {
@@ -142,17 +149,20 @@ let p2 = new MyPromise((resolve, reject) => {
   // reject("失败");
 });
 
-MyPromise.all(["a", "b", p1, p2, "c"]).then(
-  (value) => console.log(value),
-  (reason) => console.log(reason)
-);
+// MyPromise.all(["a", "b", p1, p2, "c"]).then(
+//   (value) => console.log(value),
+//   (reason) => console.log(reason)
+// );
 
 // 模拟返回一个 Promise 对象
-// function other() {
-//   return new MyPromise((resolve, reject) => {
-//     resolve("other");
-//   });
-// }
+function other() {
+  return new MyPromise((resolve, reject) => {
+    resolve("other");
+  });
+}
+
+MyPromise.resolve(10).then((val) => console.log(val));
+MyPromise.resolve(other()).then((val) => console.log(val));
 
 // var promise = new MyPromise((resolve, reject) => {
 //   setTimeout(() => {
