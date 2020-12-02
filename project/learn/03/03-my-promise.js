@@ -138,6 +138,46 @@ class MyPromise {
       });
     }
   }
+  finally(fn) {
+    // finally 就是在模拟一个 then方法
+    // 需要多考虑一个情况就是 fn 是一个Promise 我们需要等待完成后 再将 Promise 的数据传给下一个then
+    return this.then(
+      (value) => {
+        return MyPromise.resolve(fn()).then(() => value);
+      },
+      (reason) => {
+        return MyPromise.resolve(fn()).then(() => {
+          throw reason;
+        });
+      }
+    );
+  }
 }
 
 // 测试代码
+function p1() {
+  return new MyPromise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("success1");
+      // reject("failure p1");
+    }, 2000);
+  });
+}
+
+function p2() {
+  return new MyPromise((resolve, reject) => {
+    // resolve("success2");
+    reject("failure2");
+  });
+}
+p2()
+  .finally(() => {
+    console.log("finally");
+    // 1、返回一个 Promise 的情况
+    return p1();
+    // 2、什么都不返回的情况
+  })
+  .then(
+    (value) => console.log("sucess", value),
+    (reason) => console.log("failure", reason)
+  );

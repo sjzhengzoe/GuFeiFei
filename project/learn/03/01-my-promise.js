@@ -209,23 +209,31 @@
 //   }
 // );
 // 七、finally 方法
-const p1 = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    resolve("success1");
-    // reject("failure");
-  }, 2000);
-});
-new Promise((resolve, reject) => {
-  resolve("success");
-  reject("failure");
-})
+function p1() {
+  return new MyPromise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("success1");
+      // reject("failure p1");
+    }, 2000);
+  });
+}
+
+function p2() {
+  return new MyPromise((resolve, reject) => {
+    // resolve("success2");
+    reject("failure2");
+  });
+}
+p2()
   .finally(() => {
     console.log("finally");
-    return p1;
+    // 1、返回一个 Promise 的情况
+    return p1();
+    // 2、什么都不返回的情况
   })
   .then(
-    (value) => console.log(value),
-    (reason) => console.log(reason)
+    (value) => console.log("sucess", value),
+    (reason) => console.log("failure", reason)
   );
 
 // 八、catch 方法
