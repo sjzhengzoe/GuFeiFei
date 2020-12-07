@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "googleapis": "^66.0.0",
     "koa": "^2.13.0",
     "koa-router": "^10.0.0",
+    "nodemon": "^2.0.6",
     "request": "^2.88.2"
   }
 }
