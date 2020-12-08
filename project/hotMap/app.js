@@ -1,15 +1,13 @@
-// import googleapi from 'googleapis';
 const { google } = require("googleapis");
 const key = require("./keys.json");
-
 const viewId = "ga:179673915";
 const jwtClient = new google.auth.JWT(key.client_email, null, key.private_key, ["https://www.googleapis.com/auth/analytics", "https://www.googleapis.com/auth/analytics.readonly"], null);
 
+// 发送请求
 async function queryData(options) {
   return new Promise((resolve, reject) => {
     google.analytics("v3").data.ga.get(options, async (err, response) => {
       if (err) {
-        console.log(err);
         reject(err);
       } else {
         resolve(response);
@@ -18,7 +16,8 @@ async function queryData(options) {
   });
 }
 
-function configOptions(metrics, dimensions, startDate, endDate = "today", empty = false, filters, sort) {
+// 请求参数处理
+function configOptions(metrics, dimensions, startDate, endDate, empty = false, filters, sort) {
   let options = {
     auth: jwtClient,
     ids: viewId,
@@ -38,6 +37,7 @@ function configOptions(metrics, dimensions, startDate, endDate = "today", empty 
   return options;
 }
 
+// 日期处理
 function dateFormat(date, fmt = "YYYY-MM-DD HH:mm:ss", days) {
   if (!date) {
     return "";
@@ -84,33 +84,42 @@ function dateFormat(date, fmt = "YYYY-MM-DD HH:mm:ss", days) {
   return fmt;
 }
 
-function userChart(req, res, next) {
+async function getChartData(params) {
+  // 接口参数
+  const { dateStart, dateEnd, device } = params;
   //  维度
   const dimensions = "ga:dimension1";
-  //  指标次数
+  //  指标
   const metrics = "ga:metric1";
-  const startDate = dateFormat(new Date("2020-12-01"), "YYYY-MM-DD", -30);
-  const endDate = dateFormat(new Date("2020-12-07"), "YYYY-MM-DD");
-  let options = configOptions(metrics, dimensions, startDate, endDate, false, "ga:deviceCategory==mobile", "-ga:metric1,ga:dimension1");
-  queryData(options).then(
-    (response) => {
-      let responseData = {};
-      let headers = response.data.columnHeaders;
 
-      headers.splice(0, 1);
-      let rows = response.data.rows;
+  // 开始时间
+  const startDate = dateFormat(dateStart, "YYYY-MM-DD", -30);
+  // 结束时间
+  const endDate = dateFormat(dateEnd, "YYYY-MM-DD");
+  // 过滤项
+  const filter = device ? `ga:deviceCategory==${device}` : "ga";
+  // 排序
+  const sort = "-ga:metric1,ga:dimension1";
+  // 最终参数
+  let options = configOptions(metrics, dimensions, startDate, endDate, false, filter, sort);
 
-      responseData = rows.map((item, index) => {
-        return { selector: item[0].replace(/^【[\s\S]*】/, ""), val: item[1] };
-      });
+  try {
+    const response = await queryData(options);
+    let responseData = {};
+    let headers = response.data.columnHeaders;
 
-      console.log("response.data:", responseData);
-    },
-    (err) => {
-      console.log("---err");
-      returnError(res, err);
-    }
-  );
+    headers.splice(0, 1);
+    let rows = response.data.rows;
+
+    responseData = rows.map((item, index) => {
+      return { selector: item[0].replace(/^【[\s\S]*】/, ""), val: item[1] };
+    });
+    return responseData;
+  } catch (err) {
+    console.log("========= 出现错误 =========\n\n", err, "\n\n========= 错误报告结束 =========");
+
+    throw err;
+  }
 }
 
-userChart();
+exports.getChartData = getChartData;
