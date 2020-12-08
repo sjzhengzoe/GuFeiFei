@@ -21,5 +21,5 @@ router.get("/api/get/heatmap", async (ctx, next) => {
 });
 
 app.use(router.routes());
-
+// http://localhost:3000/api/get/heatmap?dateStart=2020-12-01&dateEnd=2020-12-01&device=mobile
 app.listen(3000);
