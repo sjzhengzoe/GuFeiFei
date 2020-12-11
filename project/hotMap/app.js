@@ -86,7 +86,7 @@ function dateFormat(date, fmt = "YYYY-MM-DD HH:mm:ss", days) {
 
 async function getChartData(params) {
   // 接口参数
-  const { dateStart, dateEnd, device } = params;
+  const { dateStart, dateEnd, device, pathname = "all" } = params;
   //  维度
   const dimensions = "ga:dimension1";
   //  指标
@@ -111,9 +111,13 @@ async function getChartData(params) {
     headers.splice(0, 1);
     let rows = response.data.rows;
 
-    responseData = rows.map((item, index) => {
-      return { selector: item[0].replace(/^【[\s\S]*】/, ""), val: item[1] };
-    });
+    responseData = rows
+      .map((item, index) => {
+        if (item[0].match(/^【([\s\S]*)】/)[1] == pathname || pathname == "all") {
+          return { selector: item[0].replace(/^【[\s\S]*】/, ""), val: item[1] };
+        }
+      })
+      .filter((item) => item);
     return responseData;
   } catch (err) {
     console.log("========= 出现错误 =========\n\n", err, "\n\n========= 错误报告结束 =========");
