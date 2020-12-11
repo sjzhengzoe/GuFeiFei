@@ -86,7 +86,7 @@ function dateFormat(date, fmt = "YYYY-MM-DD HH:mm:ss", days) {
 
 async function getChartData(params) {
   // 接口参数
-  const { dateStart, dateEnd, device, pathname = "all" } = params;
+  const { dateStart, dateEnd, device, pathname } = params;
   //  维度
   const dimensions = "ga:dimension1";
   //  指标
@@ -97,7 +97,10 @@ async function getChartData(params) {
   // 结束时间
   const endDate = dateFormat(dateEnd, "YYYY-MM-DD");
   // 过滤项
-  const filter = device ? `ga:deviceCategory==${device}` : "ga";
+  const filters = [];
+  device && filters.push(`ga:deviceCategory==${device}`);
+  pathname && filters.push(`ga:dimension1=@【${pathname}】`);
+  const filter = filters ? filters.join(";") : "";
   // 排序
   const sort = "-ga:metric1,ga:dimension1";
   // 最终参数
@@ -110,14 +113,12 @@ async function getChartData(params) {
 
     headers.splice(0, 1);
     let rows = response.data.rows;
-
-    responseData = rows
-      .map((item, index) => {
-        if (item[0].match(/^【([\s\S]*)】/)[1] == pathname || pathname == "all") {
-          return { selector: item[0].replace(/^【[\s\S]*】/, ""), val: item[1] };
-        }
-      })
-      .filter((item) => item);
+    responseData =
+      rows &&
+      rows.map((item, index) => {
+        return { selector: item[0].replace(/^【[\s\S]*】/, ""), val: item[1] };
+        // return { selector: item[0], val: item[1] };
+      });
     return responseData;
   } catch (err) {
     console.log("========= 出现错误 =========\n\n", err, "\n\n========= 错误报告结束 =========");
