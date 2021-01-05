@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "mongod"
+    "init": "sh mongoinit.sh",
+    "server": "node app.js"
   },
   "keywords": [],
   "author": "",
