@@ -1,0 +1,15 @@
+.TextComponent {
+  color: red;
+  ::placeholder {
+    color: gray;
+  }
+
+  .image {
+    background-image: url();
+  }
+  @media (min-resolution: 2dppx) {
+    .image {
+      background-image: url();
+    }
+  }
+}

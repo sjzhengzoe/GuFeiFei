@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "qeeq": ["./src/index.tsx"],
+      "Components/*": ["./src/components/*"],
+      "global/*": ["./src/global/*"],
+      "images/*": ["./src/global/images/*"]
+    },
+    "moduleResolution": "node",
+    // 默认导入
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "module": "commonJs",
+    "jsx": "react",
+    "target": "es6",
+    "lib": ["dom", "es6"]
+  },
+  "include": ["./src/**/*", "./images.d.ts"],
+  "exclude": ["node_modules"]
+}
