@@ -6,13 +6,13 @@ const TerserPlugin = require('terser-webpack-plugin');
 const colors = require('colors');
 
 // components 的路径
-let componentsPath = path.resolve(__dirname, 'src/components');
+let ComponentsPath = path.resolve(__dirname, 'src/components');
 // components 下文件夹的名字 等组件多了可以做成可配置
-let filesNameArr = fs.readdirSync(componentsPath);
+let firstFilesNameArr = fs.readdirSync(ComponentsPath);
 
 module.exports = {
   mode: 'development',
-  entry: getEntryPaths(filesNameArr),
+  entry: getEntryPaths(firstFilesNameArr),
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name]/index.js',
@@ -50,7 +50,7 @@ module.exports = {
     ],
   },
   plugins: [
-    ...getHtmlPluginConfig(filesNameArr),
+    ...getHtmlPluginConfig(firstFilesNameArr),
     new MiniCssExtractPlugin({
       filename: './[name]/index.css',
     }),
@@ -92,24 +92,36 @@ module.exports = {
 };
 
 // 获取 入口路径
-function getEntryPaths(filesNameArr) {
+function getEntryPaths(firstFilesNameArr) {
   let entry = {};
-  filesNameArr.map(fileName => {
-    entry[fileName] = `./src/components/${fileName}/__test.tsx`;
+  firstFilesNameArr.map(firstFilesName => {
+    let seconedFilesNameArr = fs.readdirSync(`${ComponentsPath}/${firstFilesName}`);
+    seconedFilesNameArr.map(fileName => {
+      entry[
+        `${firstFilesName}/${fileName}`
+      ] = `./src/components/${firstFilesName}/${fileName}/__test.tsx`;
+    });
   });
-  console.log(colors.green('入口路径为:', entry));
+  console.log(colors.green(`入口路径为:\n`));
+  console.log(entry);
   return entry;
 }
 
 // 获取 html plugin 配置
-function getHtmlPluginConfig(filesNameArr) {
-  return filesNameArr.map(
-    fileName =>
-      new HtmlWebpackPlugin({
-        title: fileName,
-        filename: `./${fileName}/index.html`,
-        template: './src/global/template/component.html',
-        chunks: [fileName],
-      })
-  );
+function getHtmlPluginConfig(firstFilesNameArr) {
+  let plugins = [];
+  firstFilesNameArr.map(firstFilesName => {
+    let seconedFilesNameArr = fs.readdirSync(`${ComponentsPath}/${firstFilesName}`);
+    seconedFilesNameArr.map(seconedFileName => {
+      plugins.push(
+        new HtmlWebpackPlugin({
+          title: seconedFileName,
+          filename: `./${firstFilesName}/${seconedFileName}/index.html`,
+          template: './src/global/template/component.html',
+          chunks: [`${firstFilesName}/${seconedFileName}`],
+        })
+      );
+    });
+  });
+  return plugins;
 }

@@ -18,31 +18,37 @@ module.exports = plop => {
         message: 'class or function',
         default: 'function',
       },
+      {
+        type: 'input',
+        name: 'Platform',
+        message: 'PC or M',
+        default: 'pc',
+      },
     ],
     actions: [
       {
         // 添加 js 文件
         type: 'add',
-        path: resolve('./src/components/{{name}}/index.tsx'),
+        path: resolve('./src/components/{{Platform}}/{{name}}/index.tsx'),
         templateFile: 'src/global/template/React-components-jsx-{{type}}.hbs',
       },
       {
         // 添加 scss 文件
         type: 'add',
-        path: resolve('./src/components/{{name}}/index.scss'),
+        path: resolve('./src/components/{{Platform}}/{{name}}/index.scss'),
         templateFile: 'src/global/template/React-components-scss.hbs',
       },
       {
         // 添加 test 文件
         type: 'add',
-        path: resolve('./src/components/{{name}}/__test.tsx'),
+        path: resolve('./src/components/{{Platform}}/{{name}}/__test.tsx'),
         templateFile: 'src/global/template/React-components-jsx-test.hbs',
       },
       {
         // 添加该模块引入
         type: 'append',
         path: resolve('./src/index.tsx'),
-        template: "export { default as {{name}} } from 'Components/{{name}}';",
+        template: "export { default as {{name}} } from 'Components/{{Platform}}/{{name}}';",
       },
     ],
   });

@@ -39,8 +39,8 @@ import { Input,Text} from 'qeeq-components';
 npm run server
 ```
 
-例如此处本地调试 Input 组件则是如下链接
-http://localhost:9000/Input
+例如此处本地调试 PC下 的 Input 组件则是如下链接
+http://localhost:9000/PC/Input
 
 ## 快速创建一个组件模板
 
