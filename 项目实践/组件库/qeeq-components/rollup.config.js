@@ -54,7 +54,7 @@ let basicConfig = fileName => {
         exclude: ['node_modules/**', 'images/**'],
       }),
       alias({
-        entries: [{ find: 'images', replacement: '../../global/images' }],
+        entries: [{ find: 'images', replacement: '../../../global/images' }],
       }),
     ],
 
@@ -78,22 +78,29 @@ let basicConfig = fileName => {
 // components 的路径
 let componentsPath = path.resolve(__dirname, 'src/components');
 // components 下文件夹的名字
-let filesNameArr = fs.readdirSync(componentsPath);
-// 配置文件数组
-let componentsNameArr = filesNameArr.map(fileName => {
-  return {
-    ...basicConfig(fileName),
-    input: `./src/components/${fileName}/index.tsx`,
-    output: {
-      file: `${buildName}/${fileName}/index.js`,
-      format: buildType,
-      globals: {
-        react: 'React',
-      },
+let firstFilesNameArr = fs.readdirSync(componentsPath);
 
-      sourcemap: false,
-    },
-  };
+// 配置文件数组
+let componentsNameArr = [];
+
+firstFilesNameArr.map(firstFilesName => {
+  let seconedFilesNameArr = fs.readdirSync(
+    `${componentsPath}/${firstFilesName}`
+  );
+  seconedFilesNameArr.map(seconedFilesName => {
+    componentsNameArr.push({
+      ...basicConfig(`${firstFilesName}/${seconedFilesName}`),
+      input: `./src/components/${`${firstFilesName}/${seconedFilesName}`}/index.tsx`,
+      output: {
+        file: `${buildName}/${`${firstFilesName}/${seconedFilesName}`}/index.js`,
+        format: buildType,
+        globals: {
+          react: 'React',
+        },
+        sourcemap: false,
+      },
+    });
+  });
 });
 
 export default componentsNameArr;

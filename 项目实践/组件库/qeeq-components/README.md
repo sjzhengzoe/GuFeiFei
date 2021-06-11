@@ -1,9 +1,57 @@
-这是一个使用 Vite 的测试
-开箱即用 直接就可以进行开发 不用什么配置太多
-但是 Vite 打包分成两种 虽然内置 rollup 的打包配置 但是看着不完全
+# 使用说明
 
-Vite 打包有两种模式
-一种是多页面应用打包 不是该场景 弃
-一种是库模式打包 这个打包出来就是一个 js 文件 目前看没找到按需求打包成不同文件夹 所以没办法支持 按需加载 弃
-最终选择 rollup 打包 可以按需使用
-可能是我没找到怎么库模式自己配置打包 以后找到还是可以继续用 Vite 的 毕竟开发还是很快的
+## 安装
+
+```
+npm i qeeq-components
+```
+
+## 配置 babel.config.js 文件
+
+按需引入并自动引入样式文件，需进行如下设置。
+
+```
+plugins:[
+	[
+      'import',
+      {
+        libraryName: 'qeeq-components',
+        libraryDirectory: 'dist',
+        style: true,
+        camel2DashComponentName: false,
+      },
+      'qeeq-components',
+    ]
+]
+```
+
+## 使用
+
+```
+import { Input,Text} from 'qeeq-components';
+```
+
+# 开发说明
+
+## 开启本地
+
+```
+npm run server
+```
+
+例如此处本地调试 PC下 的 Input 组件则是如下链接
+http://localhost:9000/PC/Input
+
+## 快速创建一个组件模板
+
+```
+npm run create
+```
+
+## 开发注意
+
+### 尽量少用图片 尽可能用户配置
+
+如需图片测试可使用链接
+https://oss.qeeq.com/s/public/act/0e0372726e83452e88c72abf83052234.jpg
+进行测试

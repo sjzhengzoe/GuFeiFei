@@ -1,0 +1,99 @@
+.TipComponent {
+  width: fit-content;
+  .mainContent {
+    position: relative;
+    display: flex;
+    justify-self: center;
+  }
+  .cursor_pointer {
+    cursor: pointer;
+    display: flex;
+  }
+  .tipContainer {
+    position: absolute;
+    z-index: 1;
+    min-width: 200px;
+    &.bottomLeft {
+      left: 0;
+      top: 100%;
+      padding-top: 10px;
+    }
+    &.bottomRight {
+      right: 0;
+      top: 100%;
+      padding-top: 10px;
+    }
+    &.bottomMiddle {
+      top: 100%;
+      left: 50%;
+      transform: translate(-50%, 0);
+      padding-top: 10px;
+    }
+    &.topLeft {
+      bottom: 100%;
+      margin-bottom: 10px;
+      left: 0;
+    }
+    &.topRight {
+      bottom: 100%;
+      margin-bottom: 10px;
+      right: 0;
+    }
+    &.topMiddle {
+      bottom: 100%;
+      left: 0;
+      right: 0;
+      margin: 0 auto 10px;
+    }
+  }
+  .tipContent {
+    padding: 8px;
+    width: 100%;
+    box-shadow: 0 -2px 6px 0 rgba(0, 0, 0, 0.22);
+    color: #fff;
+    background: rgba(0, 0, 0, 0.9);
+    box-sizing: border-box;
+    border-radius: 4px;
+    font-size: 13px;
+    display: inline-block;
+  }
+  .arrow {
+    width: 10px;
+    height: 10px;
+    background-color: rgba(0, 0, 0, 0.9);
+    transform: rotate(45deg);
+    position: absolute;
+    display: block;
+    position: absolute;
+    z-index: -1;
+
+    &.bottomLeft {
+      top: 5px;
+      left: 20px;
+    }
+    &.bottomRight {
+      top: 5px;
+      right: 20px;
+    }
+    &.bottomMiddle {
+      top: 5px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+    }
+    &.topLeft {
+      bottom: -5px;
+      left: 20px;
+    }
+    &.topRight {
+      bottom: -5px;
+      right: 20px;
+    }
+    &.topMiddle {
+      bottom: -5px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+    }
+  }
+}

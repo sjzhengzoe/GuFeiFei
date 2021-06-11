@@ -1,28 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vite/client"],
-    "allowJs": false,
-    "skipLibCheck": true,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "qeeq-components": ["./src/index"],
+      "qeeq-components": ["./src/index.tsx"],
       "Components/*": ["./src/components/*"],
       "global/*": ["./src/global/*"],
       "images/*": ["./src/global/images/*"]
-    }
+    },
+    "moduleResolution": "node",
+    // 默认导入
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "module": "commonJs",
+    "jsx": "react",
+    "target": "es6",
+    "lib": ["dom", "es6"]
   },
-
-  "include": ["./src", "**/**.d.ts"]
+  "include": ["./src/**/*", "./images.d.ts"],
+  "exclude": ["node_modules"]
 }

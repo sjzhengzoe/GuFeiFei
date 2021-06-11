@@ -1,5 +1,6 @@
-node_modules
 .DS_Store
+*/.DS_Store
+node_modules
+es
 dist
-dist-ssr
-*.local
+lib
